@@ -1,0 +1,21 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title "Pix Key Fourleaf"
+
+Person(client, "User", "Pix Key User")
+
+System(pix, "Pix Key System", "Fourelaf Pix Key System")
+
+System_Ext(secret_manager, "AWS Secrets Manager", "Credentials Manager")
+System_Ext(apm, "APM", "Application Performance Monitoring")
+System_Ext(collect, "OTEL", "OpenTelemetry Collector")
+System_Ext(payment_gateway, "Payment Gateway", "Payment Processor")
+
+Rel(client, pix, "Uses", "HTTPS")
+Rel(pix, secret_manager, "Uses", "HTTPS")
+Rel(pix, apm, "Uses", "HTTPS")
+Rel(pix, collect, "Uses", "HTTPS")
+Rel(pix, payment_gateway, "Uses", "HTTPS")
+
+@enduml
