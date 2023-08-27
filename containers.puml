@@ -1,0 +1,47 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title "Container Diagram - Pix Key System"
+
+Person(client, "User", "Pix Key User")
+
+System_Ext(payment_gateway, "Payment Gateway", "Payment Processor")
+
+System_Boundary(digital_pix, "Digital Pix Key"){
+    Container(spa, "SPA", "JavaScript, React","Single Page Application")
+    Container(pix_key_core,"Pix Key Core","Go, Gin-gonic", "Core of Pix Key System")
+    Container(balance_service, "Balance Service","Go, Gin-gonic", "Returns customer pix key balance")
+    Container(pix_key_manager, "Pix Key Manager", "Go, Gin-gonic", "Manages Pix Keys")
+    Container(user_manager, "User Manager","Go, Gin-gonic", "Manages Users")
+    Container(statement_service, "Statement Service","Go, Gin-gonic", "Returns customer pix key statement")
+    Container(payment_acl, "Payment ACL", "TS", "Anti-corruption layer for payment gateway")
+
+    ContainerDb(pix_key_db, "Pix-Key DB", "MySQL", "Stores Pix Keys")
+    Rel(pix_key_manager, pix_key_db, "Uses" ,"MySQL Driver")
+
+    ContainerDb(user_db, "User DB", "MySQL", "Stores Users")
+    Rel(user_manager, user_db, "Uses" ,"MySQL Driver")
+
+    ContainerDb(statement_db, "Statement DB", "MySQL", "Stores Statements")
+    Rel(statement_service, statement_db, "Uses" ,"MySQL Driver")
+
+    ContainerDb(balance_db, "Balance DB", "MySQL", "Stores Balances")
+    Rel(balance_service, balance_db, "Uses" ,"MySQL Driver")
+
+    ContainerDb(payment_db, "Payment DB", "MySQL", "Stores Payments")
+    Rel(payment_acl, payment_db, "Uses" ,"MySQL Driver")
+
+    Rel(client, spa, "Uses", "JSON/HTTP")
+
+    Rel(spa, pix_key_core, "Uses", "JSON/HTTP")
+
+    Rel(spa, balance_service, "Uses", "JSON/HTTP")
+    Rel(spa, statement_service, "Uses","JSON/HTTP")
+    Rel(spa, pix_key_manager, "Uses", "JSON/HTTP")
+    Rel(spa, user_manager, "Uses", "JSON/HTTP")
+    Rel(pix_key_core, payment_acl, "Uses", "JSON/HTTP")
+
+    Rel(payment_acl, payment_gateway, "Uses", "JSON/HTTP")
+}
+
+@enduml
