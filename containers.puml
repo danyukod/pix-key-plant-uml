@@ -1,5 +1,6 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+AddRelTag("async", $lineStyle = DashedLine())
 
 title "Container Diagram - Pix Key System"
 
@@ -34,6 +35,7 @@ System_Boundary(digital_pix, "Digital Pix Key"){
     Rel(client, spa, "Uses", "JSON/HTTP")
 
     Rel(spa, pix_key_core, "Uses", "JSON/HTTP")
+    Rel(pix_key_core, pix_key_manager, "Uses", "JSON/HTTP")
 
     Rel(spa, balance_service, "Uses", "JSON/HTTP")
     Rel(spa, statement_service, "Uses","JSON/HTTP")
@@ -42,6 +44,11 @@ System_Boundary(digital_pix, "Digital Pix Key"){
     Rel(pix_key_core, payment_acl, "Uses", "JSON/HTTP")
 
     Rel(payment_acl, payment_gateway, "Uses", "JSON/HTTP")
+
+    Rel(pix_key_core, balance_service, "Uses", "Topic", $tags = "async")
+    Rel(pix_key_core, statement_service, "Uses", "Topic", $tags = "async")
+
+    Rel(user_manager, pix_key_manager, "Uses", "Topic", $tags = "async")
 }
 
 @enduml
